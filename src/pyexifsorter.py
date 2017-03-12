@@ -6,10 +6,8 @@ it creates new directory and move the file there.
 """
 
 import argparse
-import cus_logging 
 import exiftool
 import os
-import logging
 
 g_recursive = False
 g_tags = []
@@ -35,61 +33,49 @@ def parse_arguments():
     if args.path:
         g_path = args.path
 
-def read_exifdata(path):
-    """
-    Read exif metadata for files in directory
-
-    Returns exif tags dictionary
-    """
-    files_tags = {}
-
-    for f in os.listdir(path):
-        file_path = os.path.join(path,f)
-
-        # ignore directories
-        if os.path.isfile(file_path):
-            with exiftool.ExifTool() as et:
-                tags_temp = et.get_metadata(file_path)
-                tags = {}
-                # Erase the group info from tags and leave only tag names
-                for k,v in tags_temp.items():
-                    newkey = k.split(':')[-1].lower()
-                    tags[newkey] = v
-                files_tags[f] = tags
-
-    return files_tags
-
-def sort_to_directories(files_tags, path, tags):
+def sort_to_directories(path, tags):
     """
     Move the files to directories by the value of the specified tags
     """
 
     directories = {}
 
-    for file_name, file_tags in files_tags.items():
-        #logging.debug("Current file: " + file_name)
-        values = []
-        for tag in tags:
-            # find the tag in file tags
-            try:
-                value = file_tags[tag.replace(" ","").lower()]
-                if value:
-                    values.append(value)
-            except:
-                continue
-        # Check if tags were found if file
-        if values:
-            directory_name = '_'.join(values)
-            # if value was found previously, directory exists
-            if not directory_name in directories:
-                directory = os.path.join(path, directory_name)
-                if not os.path.exists(directory):
-                    os.mkdir(directory)
-                directories[directory_name] = directory 
-                #logging.debug(directories) 
-            
-            # always move the file to the directory
-            os.rename(os.path.join(path, file_name), os.path.join(directories[directory_name],file_name))
+    for file_name in os.listdir(path):
+        file_path = os.path.join(path,file_name)
+
+        # ignore directories
+        if os.path.isfile(file_path):
+            print("Processing file " + file_path)
+            with exiftool.ExifTool() as et:
+                tags_temp = et.get_metadata(file_path)
+                file_tags = {}
+                # Erase the group info from tags and leave only tag names
+                for k,v in tags_temp.items():
+                    newkey = k.split(':')[-1].lower()
+                    file_tags[newkey] = v 
+
+            # Process the tags for one file
+            values = []
+            for tag in tags:
+                # find the tag in file tags
+                try:
+                    value = file_tags[tag.replace(" ","").lower()]
+                    if value:
+                        values.append(str(value))
+                except:
+                    continue
+            # Check if tags were found if file
+            if values:
+                directory_name = '_'.join(values)
+                # if value was found previously, directory exists
+                if not directory_name in directories:
+                    directory = os.path.join(path, directory_name)
+                    if not os.path.exists(directory):
+                        os.mkdir(directory)
+                    directories[directory_name] = directory 
+                
+                # always move the file to the directory
+                os.rename(os.path.join(path, file_name), os.path.join(directories[directory_name],file_name))
 
 def process_directories(path, tags, recursive):
     """
@@ -97,15 +83,12 @@ def process_directories(path, tags, recursive):
     This function is going only through one directory if recursive mode is not enabled.
     """
         
-    #logging.debug("Current directory: " + path)
+    print("Processing directory: " + path)
     if not recursive:
-        files_tags = read_exifdata(path)
-        sort_to_directories(files_tags, path, tags)
+        sort_to_directories(path, tags)
     else:
         directories = next(os.walk(path))[1]
-        #logging.debug(directories)
-        files_tags = read_exifdata(path)
-        sort_to_directories(files_tags, path, tags)
+        sort_to_directories(path, tags)
         for directory in directories:
             process_directories(os.path.join(path, directory), tags, recursive)
 
