@@ -34,6 +34,10 @@ def parse_arguments():
     if args.path:
         g_path = args.path
 
+    if not os.path.exists(g_path):
+        print("The selected path does not exist, exiting.")
+        exit(1)
+
 def sort_to_directories(path, tags):
     """
     Move the files to directories by the value of the specified tags
