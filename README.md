@@ -6,6 +6,9 @@ This script will sort files using the exif metadata.
 The user can use any tag or more tags to sort the files, the files are moved to directories named by the value of tag or tags.
 The name of the tags are same as printed by exiftool command.
 
+## Requirements
+This script is based on PyExifTool library and needs [ExifTool](http://www.sno.phy.queensu.ca/~phil/exiftool/) command-line utility to be installed.
+
 ## Usage
 usage: pyexifsorter [-h] [-r] [-p PATH] -t TAGS [TAGS ...]
 
