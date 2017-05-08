@@ -21,9 +21,10 @@ def parse_arguments():
 
     parser = argparse.ArgumentParser(description='Python script for sorting files by exif data')
     parser.add_argument('-r', '--recursive', help='recursive mode', action='store_true')
-    parser.add_argument('-p', '--path', help='path to directory with files for sorting')
-    parser.add_argument('-t', '--tags', help='tag/s to use for sorting, the tags are\
-            the same as returned by exiftool command', nargs='+', required=True)
+    parser.add_argument('-p', '--path', help='path to directory with files for sorting\
+            (if not specified, the current directory is used)')
+    parser.add_argument('-t', '--tags', help='tag/s to use for sorting, the tags are the same\
+            as returned by exiftool command (for example Image Size or File Type)', nargs='+', required=True)
     args = parser.parse_args()
 
     if args.recursive:
