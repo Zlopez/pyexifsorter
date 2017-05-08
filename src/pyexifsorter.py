@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/env python3
 """
 Python script for sorting files by exif data.
 Script goes through all files in directory and for every value of tag 
