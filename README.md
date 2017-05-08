@@ -26,7 +26,7 @@ For example the folder **test** has several files in it.
 - 2.png Image Size:1024x768
 - 3.avi Image Size:320x240
 
-We will run **pyexifsorte**
+We will run **pyexifsorter**:
 ```
 ./pyexifsorter -p test -t "Image Size"
 ```
