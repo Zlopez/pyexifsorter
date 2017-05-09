@@ -18,6 +18,8 @@ optional arguments:
 - h, --help            show this help message and exit
 - r, --recursive       recursive mode
 - p PATH, --path PATH  path to directory with files for sorting (if not specified, the current directory is used)
+
+required arguments:
 - t TAGS [TAGS ...], --tags TAGS [TAGS ...] tag/s to use for sorting, the tags are the same as returned by exiftool command (for example Image Size or File Type)
 
 ## Example of usage
